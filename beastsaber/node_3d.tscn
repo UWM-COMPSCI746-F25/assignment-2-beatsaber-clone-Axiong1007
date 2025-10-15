@@ -1,0 +1,68 @@
+[gd_scene load_steps=12 format=3 uid="uid://dkk6rh7ijgmrg"]
+
+[ext_resource type="Material" uid="uid://e254fj0vr83i" path="res://color/ground.tres" id="1_a202f"]
+[ext_resource type="Script" uid="uid://deiq35pdc73c0" path="res://node_3d.gd" id="1_noarx"]
+[ext_resource type="Script" uid="uid://d2evpujloj3rq" path="res://scripts/chucks.gd" id="3_a0tk4"]
+[ext_resource type="Script" uid="uid://cmcxcfdaqnkqx" path="res://scripts/raycast.gd" id="3_r3fl7"]
+[ext_resource type="Material" uid="uid://chdwy4trlrfr4" path="res://color/red.tres" id="4_jka67"]
+[ext_resource type="Script" uid="uid://dsicutxv6p0qm" path="res://scripts/leftraycast.gd" id="4_wc5p8"]
+[ext_resource type="Script" uid="uid://dtryhbgkisul1" path="res://scripts/leftchucks.gd" id="5_jsk3o"]
+[ext_resource type="Material" uid="uid://g0f6pxmjgwf5" path="res://color/blue.tres" id="6_i5arm"]
+
+[sub_resource type="Environment" id="Environment_a202f"]
+
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_i5arm"]
+
+[sub_resource type="ImmediateMesh" id="ImmediateMesh_wc5p8"]
+
+[node name="Node3D" type="Node3D"]
+script = ExtResource("1_noarx")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_a202f")
+
+[node name="floor" type="CSGBox3D" parent="WorldEnvironment"]
+material_override = ExtResource("1_a202f")
+size = Vector3(10, 0.1, 10)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 0.965026, 0.262156, 0, -0.262156, 0.965026, -0.306912, 1.90435, 1.91191)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="WorldEnvironment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.123394, -0.39618, -6.30533)
+size = Vector3(2.81836, 1, 5.72168)
+
+[node name="XROrigin3D" type="XROrigin3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.143166, 0)
+
+[node name="XRCamera3D" type="XRCamera3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+
+[node name="left" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, -0.5)
+tracker = &"left_hand"
+script = ExtResource("4_wc5p8")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="XROrigin3D/left"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="leftbeam" type="MeshInstance3D" parent="XROrigin3D/left"]
+material_override = ExtResource("4_jka67")
+mesh = SubResource("ImmediateMesh_i5arm")
+script = ExtResource("5_jsk3o")
+
+[node name="right" type="XRController3D" parent="XROrigin3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, 0.5)
+tracker = &"right_hand"
+script = ExtResource("3_r3fl7")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="XROrigin3D/right"]
+size = Vector3(0.1, 0.1, 0.1)
+
+[node name="rightbeam" type="MeshInstance3D" parent="XROrigin3D/right"]
+material_override = ExtResource("6_i5arm")
+mesh = SubResource("ImmediateMesh_wc5p8")
+script = ExtResource("3_a0tk4")
+
+[connection signal="button_pressed" from="XROrigin3D/left" to="XROrigin3D/left" method="_on_button_pressed"]
+[connection signal="button_pressed" from="XROrigin3D/right" to="XROrigin3D/right" method="_on_button_pressed"]
