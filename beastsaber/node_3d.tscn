@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dkk6rh7ijgmrg"]
+[gd_scene load_steps=17 format=3 uid="uid://dkk6rh7ijgmrg"]
 
 [ext_resource type="Material" uid="uid://e254fj0vr83i" path="res://color/ground.tres" id="1_a202f"]
 [ext_resource type="Script" uid="uid://deiq35pdc73c0" path="res://node_3d.gd" id="1_noarx"]
@@ -6,14 +6,21 @@
 [ext_resource type="Script" uid="uid://cmcxcfdaqnkqx" path="res://scripts/raycast.gd" id="3_r3fl7"]
 [ext_resource type="Material" uid="uid://chdwy4trlrfr4" path="res://color/red.tres" id="4_jka67"]
 [ext_resource type="Script" uid="uid://dsicutxv6p0qm" path="res://scripts/leftraycast.gd" id="4_wc5p8"]
+[ext_resource type="AudioStream" uid="uid://blum4ksjseupr" path="res://audio/hit.mp3" id="5_cdqbm"]
 [ext_resource type="Script" uid="uid://dtryhbgkisul1" path="res://scripts/leftchucks.gd" id="5_jsk3o"]
 [ext_resource type="Material" uid="uid://g0f6pxmjgwf5" path="res://color/blue.tres" id="6_i5arm"]
+[ext_resource type="AudioStream" uid="uid://ugp682l8g8cx" path="res://audio/on.mp3" id="9_4arys"]
+[ext_resource type="PackedScene" uid="uid://dvmp1ijwqx07n" path="res://block.tscn" id="10_tereu"]
+[ext_resource type="PackedScene" uid="uid://2fjsrklfoi4q" path="res://blueblock.tscn" id="11_cdqbm"]
 
 [sub_resource type="Environment" id="Environment_a202f"]
+background_mode = 2
 
 [sub_resource type="ImmediateMesh" id="ImmediateMesh_i5arm"]
 
 [sub_resource type="ImmediateMesh" id="ImmediateMesh_wc5p8"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tereu"]
 
 [node name="Node3D" type="Node3D"]
 script = ExtResource("1_noarx")
@@ -21,16 +28,8 @@ script = ExtResource("1_noarx")
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_a202f")
 
-[node name="floor" type="CSGBox3D" parent="WorldEnvironment"]
-material_override = ExtResource("1_a202f")
-size = Vector3(10, 0.1, 10)
-
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="WorldEnvironment"]
-transform = Transform3D(1, 0, 0, 0, 0.965026, 0.262156, 0, -0.262156, 0.965026, -0.306912, 1.90435, 1.91191)
-
-[node name="CSGBox3D" type="CSGBox3D" parent="WorldEnvironment"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.123394, -0.39618, -6.30533)
-size = Vector3(2.81836, 1, 5.72168)
+transform = Transform3D(0.999997, 0.00237527, 0.000731245, 0.00221355, -0.98501, 0.172481, 0.00112996, -0.172479, -0.985013, -0.306912, 1.94044, 1.91191)
 
 [node name="XROrigin3D" type="XROrigin3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.143166, 0)
@@ -51,6 +50,13 @@ material_override = ExtResource("4_jka67")
 mesh = SubResource("ImmediateMesh_i5arm")
 script = ExtResource("5_jsk3o")
 
+[node name="hitter" type="AudioStreamPlayer3D" parent="XROrigin3D/left"]
+stream = ExtResource("5_cdqbm")
+volume_db = 80.0
+
+[node name="onsaber" type="AudioStreamPlayer3D" parent="XROrigin3D/left"]
+stream = ExtResource("9_4arys")
+
 [node name="right" type="XRController3D" parent="XROrigin3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1, 0.5)
 tracker = &"right_hand"
@@ -63,6 +69,29 @@ size = Vector3(0.1, 0.1, 0.1)
 material_override = ExtResource("6_i5arm")
 mesh = SubResource("ImmediateMesh_wc5p8")
 script = ExtResource("3_a0tk4")
+
+[node name="hit" type="AudioStreamPlayer3D" parent="XROrigin3D/right"]
+stream = ExtResource("5_cdqbm")
+
+[node name="onsaberright" type="AudioStreamPlayer3D" parent="XROrigin3D/right"]
+stream = ExtResource("9_4arys")
+
+[node name="Block" parent="." instance=ExtResource("10_tereu")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.01781, 1.7, 7.19575)
+
+[node name="Blueblock" parent="." instance=ExtResource("11_cdqbm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.691767, 1.7, 7.344)
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+
+[node name="floor" type="CSGBox3D" parent="StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 2.0967, 0, 0, 0)
+material_override = ExtResource("1_a202f")
+size = Vector3(20, 0.5, 20)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+transform = Transform3D(20, 0, 0, 0, 0.5, 0, 0, 0, 20, 0, 0, 0)
+shape = SubResource("BoxShape3D_tereu")
 
 [connection signal="button_pressed" from="XROrigin3D/left" to="XROrigin3D/left" method="_on_button_pressed"]
 [connection signal="button_pressed" from="XROrigin3D/right" to="XROrigin3D/right" method="_on_button_pressed"]

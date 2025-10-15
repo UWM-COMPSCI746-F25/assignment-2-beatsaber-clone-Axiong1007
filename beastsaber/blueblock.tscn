@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=3 uid="uid://2fjsrklfoi4q"]
+
+[ext_resource type="Script" uid="uid://bkhfi0cx06kwx" path="res://boxmove.gd" id="1_guolk"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2w8ny"]
+albedo_color = Color(0, 0, 0.780392, 1)
+metallic = 1.0
+roughness = 0.45
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_guolk"]
+
+[node name="Blueblock" type="Node3D"]
+
+[node name="blue" type="RigidBody3D" parent="."]
+physics_interpolation_mode = 2
+script = ExtResource("1_guolk")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="blue"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+material_override = SubResource("StandardMaterial3D_2w8ny")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="blue"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+shape = SubResource("BoxShape3D_guolk")
